@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Microsoft.Speech.Recognition;
 using Microsoft.Speech.Synthesis;
 
@@ -12,7 +11,7 @@ namespace ChessSpeechTest1
     class Program
     {
         static bool done = false;
-        static string XML_PATH = "C:\\Users\\Denis\\Documents\\Github\\SpokenDialogueProjectRepo\\ChessSpeechTest1\\ChessSpeechTest1\\";
+        static string XML_PATH = "C:\\Github\\SpokenDialogueProjectRepo\\ChessSpeechTest1\\ChessSpeechTest1\\";
         static string XML_FILE = "MovePieceGrammar.xml";
 
         static void Main(string[] args)
@@ -47,10 +46,19 @@ namespace ChessSpeechTest1
         static void sre_SpeechRecognized(object sender,
         SpeechRecognizedEventArgs e)
         {
-            if (e.Result.Confidence >= 0.5)
-                Console.WriteLine("I heard " + e.Result.Text);
+            String result = "";
+            if (e.Result.Confidence >= 0.5){
+                result = "I heard " + e.Result.Text;
+            }
             else
-                Console.WriteLine("Unknown word");
+            {
+                result = "I don't know what you were saying";
+            }
+            Console.WriteLine(result);
+            SpeechSynthesizer synth = new SpeechSynthesizer();
+            synth.SelectVoiceByHints(VoiceGender.Female);
+            synth.SetOutputToDefaultAudioDevice();
+            synth.Speak(result);
             Console.WriteLine("Semantics contains key: " + e.Result.Semantics.ContainsKey("QuitCommands"));
             if (e.Result.Semantics.ContainsKey("QuitCommands"))
             {
