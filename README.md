@@ -105,3 +105,34 @@ Optional Branch Merging:
 9. Switch to master branch (git checkout "master")
 10. Merge your branch with master (git merge "branchname")
 11. Push merged changes to github (git push)
+
+-------------
+Compiling steps
+-------------
+1. Save the code in the previous build output!!!
+2. Before Building Unity Project, delete the previous build output.
+3. Build solution in Unity
+4. Open the solution in Visual Studio
+5. Right click on the solution project 
+	select the configuration
+	Change to x86 inted of ARM
+6. Right click project
+	Add Reference
+	Browse
+	find the Microsoft.Speech.dll	
+	
+7. Paste the saved speech code after the onLaunched() method (remember to include MS speech)
+using Microsoft.Speech.Recognition;
+using Microsoft.Speech.Synthesis;
+8. Call the code in the onLaunched() method
+9. Build and play
+
+
+
+
+
+
+
+
+
+
