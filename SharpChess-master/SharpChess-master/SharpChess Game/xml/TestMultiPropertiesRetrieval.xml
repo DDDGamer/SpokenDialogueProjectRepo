@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="ChessPiece"
+xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <!--<rule id="Commands" scope="public">
+    <tag>
+      out.MoveCommands = new Object();
+      out.QuitCommands = new Object();
+    </tag>
+    <one-of>
+      <item>
+        <ruleref uri="#QuitCommands"/>
+        <tag> out.QuitCommands = rules.QuitCommands; </tag>
+      </item>
+      <item>
+        <ruleref uri="#MoveCommands"/>
+        <tag> out.MoveCommands = rules.MoveCommands;</tag>
+      </item>
+    </one-of>
+  </rule>-->
+  
+  <rule id="Commands" scope="public">
+    <item>
+      <ruleref uri="#MoveCommands"/>
+    </item>
+  </rule>
+  
+  <rule id="MoveCommands" scope="public">
+    <item repeat="0-1">
+      <ruleref uri="#Action" />
+    </item>
+    <item>
+      <ruleref uri="#ChessPiece"/>
+    </item>
+    <item> to </item>
+    <item>
+      <ruleref uri="#HorizontalPosition"/>
+    </item>
+    <item>
+      <ruleref uri="#VerticalPosition"/>
+    </item>
+  </rule>
+
+  <rule id="Action" scope="public">
+    <one-of>
+      <item> move </item>
+      <item> take </item>
+    </one-of>
+  </rule>
+
+  <rule id="ChessPiece" scope="public">
+    <one-of>
+      <item> king </item>
+      <item> pawn </item>
+      <item> queen </item>
+      <item> rook </item>
+      <item> bishop </item>
+      <item> knight </item>
+    </one-of>
+  </rule>
+
+  <rule id="HorizontalPosition" scope="public">
+    <one-of>
+      <item> A </item>
+      <item> B </item>
+      <item> C </item>
+      <item> D </item>
+      <item> E </item>
+      <item> F </item>
+      <item> G </item>
+      <item> H </item>
+    </one-of>
+  </rule>
+
+  <rule id="VerticalPosition" scope="public">
+    <one-of>
+      <item> one </item>
+      <item> two </item>
+      <item> three </item>
+      <item> four </item>
+      <item> five </item>
+      <item> six </item>
+      <item> seven </item>
+      <item> eight </item>
+    </one-of>
+  </rule>
+
+  <rule id="QuitCommands" scope="public">
+    <one-of>
+      <item> quit </item>
+      <item> end </item>
+      <item> exit </item>
+    </one-of>
+  </rule>
+</grammar>
+

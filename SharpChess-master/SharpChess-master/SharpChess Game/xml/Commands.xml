@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="Commands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="Commands" scope="public">
+    <one-of>
+      <item>
+        <ruleref uri="MoveCommands.xml#MovePieceToPosition"/>
+        <tag> out.MovePieceToPosition = rules.latest(); </tag>
+      </item>
+      <item>
+        <ruleref uri="MoveCommands.xml#MovePositionToPosition"/>
+        <tag> out.MovePositionToPosition = rules.latest(); </tag>
+      </item>
+      <item>
+        <ruleref uri="AskValidMove.xml"/>
+        <tag> out.AskValidMove = rules.AskValidMove; </tag>
+      </item>
+      <item>
+        <ruleref uri="AskPossibleMoves.xml"/>
+        <tag> out.AskPossibleMoves = rules.AskPossibleMoves; </tag>
+      </item>
+      <item>
+        <ruleref uri="QuitCommands.xml"/>
+        <tag> out.QuitCommands = rules.QuitCommands; </tag>
+      </item>
+      <item>
+        <ruleref uri="ConfirmCommands.xml"/>
+        <tag> out.ConfirmCommands = rules.ConfirmCommands; </tag>
+      </item>
+    </one-of>
+  </rule>
+</grammar>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="AskValidMove"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="AskValidMove" scope="public">
+    <example>Can I move Bravo 2 to Bravo 3?</example>
+    <item>
+      <ruleref uri="#Prefix"/>
+      <tag> out.Prefix = rules.Prefix; </tag>
+    </item>
+    <item>
+      <ruleref uri="MoveCommands.xml"/>
+      <tag>
+        out.Action = rules.MoveCommands.Action;
+        out.ChessPiece = rules.MoveCommands.ChessPiece;
+        out.HorizontalPosition = rules.MoveCommands.HorizontalPosition;
+        out.VerticalPosition = rules.MoveCommands.VerticalPosition;
+      </tag>
+    </item>
+  </rule>
+
+  <rule id="Prefix">
+    <one-of>
+      <item> Can i </item>
+      <item> May i </item>
+    </one-of>
+  </rule>
+</grammar>

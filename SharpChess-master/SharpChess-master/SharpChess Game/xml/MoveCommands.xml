@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="MoveCommands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="MoveCommands" scope="public">
+    <one-of>
+      <item>
+        <ruleref uri="#MovePieceToPosition"/>
+      </item>
+      <item>
+        <ruleref uri="#MovePositionToPosition"/>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="MovePieceToPosition" scope="public">
+    <item repeat="0-1">
+      <ruleref uri="#Action" />
+      <tag> out.Action = rules.Action; </tag>
+    </item>
+    <item>
+      <ruleref uri="#ChessPiece"/>
+      <tag> out.ChessPiece = rules.ChessPiece; </tag>
+    </item>
+    <item> to </item>
+    <item>
+      <ruleref uri="#HorizontalPosition"/>
+      <tag> out.HorizontalPositionTo = rules.latest(); </tag>
+    </item>
+    <item>
+      <ruleref uri="#VerticalPosition"/>
+      <tag> out.VerticalPositionTo = rules.latest(); </tag>
+    </item>
+  </rule>
+
+  <rule id="MovePositionToPosition" scope="public">
+    <item repeat="0-1">
+      <ruleref uri="#Action" />
+      <tag> out.Action = rules.Action; </tag>
+    </item>
+    <item>
+      <ruleref uri="#HorizontalPosition"/>
+      <tag> out.HorizontalPositionFrom = rules.latest(); </tag>
+    </item>
+    <item>
+      <ruleref uri="#VerticalPosition"/>
+      <tag> out.VerticalPositionFrom = rules.latest(); </tag>
+    </item>
+    <item> to </item>
+    <item>
+      <ruleref uri="#HorizontalPosition"/>
+      <tag> out.HorizontalPositionTo = rules.latest(); </tag>
+    </item>
+    <item>
+      <ruleref uri="#VerticalPosition"/>
+      <tag> out.VerticalPositionTo = rules.latest(); </tag>
+    </item>
+  </rule>
+
+  <rule id="Action" scope="public">
+    <one-of>
+      <item> I want to move</item>
+      <item> move </item>
+      <item> take </item>
+    </one-of>
+  </rule>
+
+  <rule id="ChessPiece" scope="public">
+    <one-of>
+      <item> king </item>
+      <item> pawn </item>
+      <item> queen </item>
+      <item> rook </item>
+      <item> bishop </item>
+      <item> knight </item>
+    </one-of>
+  </rule>
+
+  <rule id="HorizontalPosition" scope="public">
+    <one-of>
+      <item>
+        Alpha <tag> out = 0 </tag>
+      </item>
+      <item>
+        Bravo <tag> out = 1 </tag>
+      </item>
+      <item>
+        Charlie <tag> out = 2 </tag>
+      </item>
+      <item>
+        Delta <tag> out = 3 </tag>
+      </item>
+      <item>
+        Echo <tag> out = 4 </tag>
+      </item>
+      <item>
+        Foxtrot <tag> out = 5 </tag>
+      </item>
+      <item>
+        Golf <tag> out = 6 </tag>
+      </item>
+      <item>
+        Hotel <tag> out = 7 </tag>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="VerticalPosition" scope="public">
+    <one-of>
+      <item>
+        one <tag> out = 0 </tag>
+      </item>
+      <item>
+        two <tag> out = 1 </tag>
+      </item>
+      <item>
+        three <tag> out = 2 </tag>
+      </item>
+      <item>
+        four <tag> out = 3 </tag>
+      </item>
+      <item>
+        five <tag> out = 4 </tag>
+      </item>
+      <item>
+        six <tag> out = 5 </tag>
+      </item>
+      <item>
+        seven <tag> out = 6 </tag>
+      </item>
+      <item>
+        eight <tag> out = 7 </tag>
+      </item>
+    </one-of>
+  </rule>
+</grammar>

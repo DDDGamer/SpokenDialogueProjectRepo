@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="ConfirmCommands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="ConfirmCommands" scope="public">
+    <one-of>
+      <item>
+        <ruleref uri="#YesNo"/>
+        <tag> out.YesNo = rules.YesNo</tag>
+      </item>
+      <item>
+        <ruleref uri="#Position"/>
+        <tag> out.Position = rules.Position</tag>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="Position">
+    <item repeat="0-1"> The </item>
+    <item repeat="0-1">
+      <ruleref uri="MoveCommands.xml#ChessPiece"/>
+      <tag> out.ChessPiece = rules.latest()</tag>
+    </item>
+    <item repeat="0-1">
+      <one-of>
+        <item> on </item>
+        <item> in </item>
+      </one-of>
+    </item>
+    <item>
+      <ruleref uri="MoveCommands.xml#HorizontalPosition"/>
+      <tag> out.HorizontalPosition = rules.latest()</tag>
+    </item>
+    <item>
+      <ruleref uri="MoveCommands.xml#VerticalPosition"/>
+      <tag> out.VerticalPosition = rules.latest()</tag>
+    </item>
+  </rule>
+
+  <rule id="YesNo">
+    <one-of>
+      <item>
+        Sure <tag> out = "Yes"; </tag>
+      </item>
+      <item>
+        Definitly <tag> out = "Yes"; </tag>
+      </item>
+      <item>
+        Yes <tag> out = "Yes"; </tag>
+      </item>
+      <item>
+        Of course <tag> out = "Yes"; </tag>
+      </item>
+
+      <item>
+        Undo <tag> out = "No"; </tag>
+      </item>
+      <item>
+        <item repeat="0-1"> I'm </item>
+        <item> not sure </item>
+        <tag> out = "No"; </tag>
+      </item>
+      <item>
+        No <tag> out = "No"; </tag>
+      </item>
+      <item>
+        Never mind <tag> out = "No"; </tag>
+      </item>
+    </one-of>
+  </rule>
+</grammar>

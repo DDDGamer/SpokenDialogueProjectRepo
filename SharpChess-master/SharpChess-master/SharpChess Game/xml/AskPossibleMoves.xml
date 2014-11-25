@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="AskPossibleMoves"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="AskPossibleMoves" scope="public">
+    <example>What are the possible moves for Delta 3?</example>
+    <one-of>
+      <item>
+        <item>
+          <ruleref uri="#Prefix"/>
+          <tag> out.Prefix = rules.Prefix</tag>
+        </item>
+        <item>
+          <ruleref uri="MoveCommands.xml#HorizontalPosition"/>
+          <tag> out.HorizontalPosition = rules.latest() </tag>
+        </item>
+        <item>
+          <ruleref uri="MoveCommands.xml#VerticalPosition"/>
+          <tag> out.VerticalPosition = rules.latest() </tag>
+        </item>
+      </item>
+      <item>
+        <item>Where can </item>
+        <item repeat="0-1"> I move </item>
+        <item>
+          <ruleref uri="MoveCommands.xml#HorizontalPosition"/>
+          <tag> out.HorizontalPosition = rules.latest() </tag>
+        </item>
+        <item>
+          <ruleref uri="MoveCommands.xml#VerticalPosition"/>
+          <tag> out.VerticalPosition = rules.latest() </tag>
+        </item>
+        <one-of>
+          <item repeat="0-1"> go </item>
+          <item repeat="0-1"> move </item>
+        </one-of>
+      </item>
+    </one-of>
+    
+  </rule>
+
+  <rule id="Prefix">
+    <item repeat="0-1"> What are the </item>
+    <one-of>
+      <item> possible moves for </item>
+    </one-of>
+  </rule>
+</grammar>
