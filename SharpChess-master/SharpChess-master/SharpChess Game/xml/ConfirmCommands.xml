@@ -50,6 +50,9 @@
       <item>
         Of course <tag> out = "Yes"; </tag>
       </item>
+      <item>
+        Yeah <tag> out = "Yes"; </tag>
+      </item>
 
       <item>
         Undo <tag> out = "No"; </tag>
@@ -64,6 +67,9 @@
       </item>
       <item>
         Never mind <tag> out = "No"; </tag>
+      </item>
+      <item>
+        Nah <tag> out = "No"; </tag>
       </item>
     </one-of>
   </rule>

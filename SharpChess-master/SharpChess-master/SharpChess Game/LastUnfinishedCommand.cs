@@ -25,6 +25,7 @@ namespace SharpChess
             MovePieceToPositionCommand,
             MovePositionToPositionCommand,
             AskPossibleMoveCommand,
+            NewGameCommand,
             Null
         }
 

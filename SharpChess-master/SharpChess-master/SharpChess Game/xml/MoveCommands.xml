@@ -11,7 +11,7 @@
       </item>
     </one-of>
   </rule>
-
+  
   <rule id="MovePieceToPosition" scope="public">
     <item repeat="0-1">
       <ruleref uri="#Action" />
@@ -37,6 +37,7 @@
       <ruleref uri="#Action" />
       <tag> out.Action = rules.Action; </tag>
     </item>
+    <item repeat="0-1"> from </item>
     <item>
       <ruleref uri="#HorizontalPosition"/>
       <tag> out.HorizontalPositionFrom = rules.latest(); </tag>
@@ -58,7 +59,7 @@
 
   <rule id="Action" scope="public">
     <one-of>
-      <item> I want to move</item>
+      <item> I want to move </item>
       <item> move </item>
       <item> take </item>
     </one-of>
@@ -72,6 +73,7 @@
       <item> rook </item>
       <item> bishop </item>
       <item> knight </item>
+      <item> horse <tag> out = "knight"</tag> </item>
     </one-of>
   </rule>
 

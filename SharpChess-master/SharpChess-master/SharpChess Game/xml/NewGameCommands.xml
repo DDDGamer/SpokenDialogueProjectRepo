@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="NewGameCommands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="NewGameCommands" scope="public">
+    <example> Start a new game </example>
+    <example> Begin another game </example>
+    
+    <item repeat="0-1">
+      <one-of>
+        <item> Start </item>
+        <item> Begin </item>
+      </one-of>
+    </item>
+    <item repeat="0-1"> a </item>
+    <item>
+      <one-of>
+        <item> new </item>
+        <item> another </item>
+      </one-of>
+    </item>
+    <item> game </item>
+  </rule>
+</grammar>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="UndoCommands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="UndoCommands" scope="public">
+    <example> Undo move </example>
+    <example> I didn't mean that</example>
+    <one-of>
+      <item>
+        <item> Undo </item>
+        <item repeat="0-1">
+          <one-of>
+            <item> last </item>
+            <item> all <tag> out = "all"; </tag> </item>
+          </one-of>
+        </item>
+        <item> move </item>
+      </item>
+      <item>
+        <item> I </item>
+        <one-of>
+          <item> did not </item>
+          <item> didn't </item>
+        </one-of>
+        <item> mean that </item>
+      </item>
+    </one-of>
+    
+  </rule>
+</grammar>

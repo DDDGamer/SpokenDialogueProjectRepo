@@ -34,6 +34,7 @@ namespace SharpChess.Model
     using System.Globalization;
     using System.Reflection;
     using System.Xml;
+    using SharpChess;
 
     using Microsoft.Win32;
 
@@ -205,6 +206,8 @@ namespace SharpChess.Model
 
         #region Public Properties
 
+        
+
         /// <summary>
         ///   Gets the available MegaBytes of free computer memory.
         /// </summary>
@@ -228,7 +231,7 @@ namespace SharpChess.Model
         /// <summary>
         ///   Gets or sets the Backup Game Path.
         /// </summary>
-        public static string BackupGamePath { private get; set; }
+        public static string BackupGamePath { get; set; }
 
         /// <summary>
         ///   Gets or sets a value indicating whether CaptureMoveAnalysisData.
@@ -1091,6 +1094,7 @@ namespace SharpChess.Model
             }
 
             MakeAMoveInternal(move.Name, move.Piece, move.To);
+           
             SaveBackup();
             SendBoardPositionChangeEvent();
             ResumePondering();

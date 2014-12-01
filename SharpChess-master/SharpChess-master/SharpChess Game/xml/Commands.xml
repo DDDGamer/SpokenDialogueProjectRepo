@@ -27,6 +27,14 @@
         <ruleref uri="ConfirmCommands.xml"/>
         <tag> out.ConfirmCommands = rules.ConfirmCommands; </tag>
       </item>
+      <item>
+        <ruleref uri="NewGameCommands.xml"/>
+        <tag> out.NewGameCommands = rules.NewGameCommands </tag>
+      </item>
+      <item>
+        <ruleref uri="UndoCommands.xml"/>
+        <tag> out.UndoCommands = rules.UndoCommands; </tag>
+      </item>
     </one-of>
   </rule>
 </grammar>

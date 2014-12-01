@@ -97,7 +97,7 @@ namespace SharpChess.Model
             /// <summary>
             ///   White at the bottom.
             /// </summary>
-            White, 
+            White,
 
             /// <summary>
             ///   Black at the bottom.

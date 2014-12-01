@@ -32,6 +32,7 @@ namespace SharpChess
     using System.Drawing;
     using System.Reflection;
     using System.Windows.Forms;
+    using System.IO;
 
     using SharpChess.Model;
     using SharpChess.Model.AI;
@@ -2956,6 +2957,7 @@ namespace SharpChess
             this.CreateBoard();
 
             Game.BackupGamePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BackupGame.sharpchess");
+            Console.WriteLine(Game.BackupGamePath);
 
             this.Text = Application.ProductName + " - " + Game.FileName;
             this.AssignMenuChecks();
@@ -3633,9 +3635,6 @@ namespace SharpChess
             Piece pieceFrom = squareFrom.Piece;
             if (pieceFrom != null && pieceFrom.Player.Colour == Game.PlayerToPlay.Colour)
             {
-                picFrom.Image = null;
-                picFrom.Refresh();
-
                 this.m_curPieceCursor = this.GetPieceCursor(pieceFrom);
                 this.pnlEdging.Cursor = this.m_curPieceCursor;
 
@@ -3690,8 +3689,12 @@ namespace SharpChess
                                     this.m_squareFrom = null;
                                     this.m_movesPossible = new Moves();
 
+                                    picFrom.Image = null;
+                                    picFrom.Refresh();
+
                                     Game.MakeAMove(move.Name, move.Piece, move.To);
                                     blnMoveMade = true;
+                                    ss.Speak(ResponseGenerator.generateResponse(pieceFrom.Name));
                                     break;
                                 }
                             }
@@ -3738,6 +3741,14 @@ namespace SharpChess
                 this.m_squareTo = null;
                 this.m_movesPossible = new Moves();
                 pieceFrom.GenerateLegalMoves(this.m_movesPossible);
+                if (m_movesPossible.Count == 0)
+                {
+                    ss.Speak("There is no possible move for the piece.");
+                }
+                else
+                {
+                    ss.Speak("Marked.");
+                }
                 this.RenderBoardColours();
                 this.pnlEdging.Refresh();
             }
@@ -3752,6 +3763,57 @@ namespace SharpChess
             this.RenderBoardColours();
         }
 
+        private Piece getPieceByName(Piece.PieceNames pieceName)
+        {
+            foreach (Piece piece in Game.PlayerToPlay.Pieces)
+            {
+                if (piece.Name == pieceName)
+                {
+                    return piece;
+                }
+            }
+            return null;
+        }
+
+        private int numOfPiece(Piece.PieceNames pieceName)
+        {
+            int count = 0;
+            foreach (Piece piece in Game.PlayerToPlay.Pieces)
+            {
+                if (piece.Name == pieceName)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        private int numOfPiece()
+        {
+            return Game.PlayerToPlay.Pieces.Count;
+        }
+
+        private Piece.PieceNames getPieceNameByString(String pieceName)
+        {
+            switch (pieceName)
+            {
+                case "king":
+                    return Piece.PieceNames.King;
+                case "pawn":
+                    return Piece.PieceNames.Pawn;
+                case "queen":
+                    return Piece.PieceNames.Queen;
+                case "rook":
+                    return Piece.PieceNames.Rook;
+                case "bishop":
+                    return Piece.PieceNames.Bishop;
+                case "knight":
+                    return Piece.PieceNames.Knight;
+                default:
+                    return Piece.PieceNames.King;
+            }
+        }
+
         #region Recognizer
 
         #region Recognizer Constants and Properties
@@ -3763,6 +3825,7 @@ namespace SharpChess
         private const String XMLURL = @"..\..\xml\Commands.xml";
         private TD.Thread threadRecognize;
         private LastUnfinishedCommand lastUnfinishedCommand;
+        private int fileNum;
 
         #endregion
 
@@ -3776,6 +3839,7 @@ namespace SharpChess
             isRecognizing = false;
             threadRecognize = new TD.Thread(new TD.ThreadStart(Recognize));
             lastUnfinishedCommand = null;
+            fileNum = 1;
         }
 
         private void InitGrammar()
@@ -3856,7 +3920,16 @@ namespace SharpChess
         {
             if (e != null)
             {
-                if (e.Result.Confidence >= 0.5)
+                string path = @"C:\Visual Studio Projects\SharpChess-master\SharpChess-master\Record\";
+                path += fileNum;
+                path += @".wav";
+
+                Stream outputStream = new FileStream(path, FileMode.Create);
+                e.Result.Audio.WriteToWaveStream(outputStream);
+                outputStream.Close();
+                fileNum++;
+
+                if (e.Result.Confidence >= 0.3)
                 {
                     Console.WriteLine(e.Result.ConstructSmlFromSemantics().CreateNavigator().OuterXml);
                     Console.WriteLine("Recognized text: " + e.Result.Text);
@@ -3872,6 +3945,14 @@ namespace SharpChess
                     else if (e.Result.Semantics.ContainsKey("AskPossibleMoves"))
                     {
                         processAskPossibleMovesCommand(e.Result.Semantics["AskPossibleMoves"]);
+                    }
+                    else if (e.Result.Semantics.ContainsKey("NewGameCommands"))
+                    {
+                        processNewGameCommands(e.Result.Semantics["NewGameCommands"]);
+                    }
+                    else if (e.Result.Semantics.ContainsKey("UndoCommands"))
+                    {
+                        processUndoCommands(e.Result.Semantics["UndoCommands"]);
                     }
                     else if (e.Result.Semantics.ContainsKey("QuitCommands"))
                     {
@@ -3910,6 +3991,7 @@ namespace SharpChess
 
         private void processMovePieceToPositionCommand(SemanticValue sv)
         {
+
             Movement movement = new Movement();
             movement.ChessPiece = sv["ChessPiece"].Value.ToString();
             movement.fileTo = int.Parse(sv["HorizontalPositionTo"].Value.ToString());
@@ -3936,6 +4018,29 @@ namespace SharpChess
             markPosibleMoves(file, rank);
         }
 
+        private void processNewGameCommands(SemanticValue sv)
+        {
+            lastUnfinishedCommand = new LastUnfinishedCommand();
+            lastUnfinishedCommand.lastCommand = LastUnfinishedCommand.LastCommand.NewGameCommand;
+            lastUnfinishedCommand.confirmationType = LastUnfinishedCommand.ConfirmationType.YesNo;
+
+            ss.Speak("Are you sure you want to start a new game?");
+            Console.WriteLine("New game command: Are you sure you want to start a new game?");
+        }
+
+        private void processUndoCommands(SemanticValue sv)
+        {
+            if (sv.Value.ToString().Equals("all"))
+            {
+                UndoAllMoves();
+            }
+            else
+            {
+                UndoMove();
+                UndoMove();
+            }
+        }
+
         private void processQuitCommand(SemanticValue sv)
         {
             lastUnfinishedCommand = new LastUnfinishedCommand();
@@ -3958,6 +4063,9 @@ namespace SharpChess
                         case LastUnfinishedCommand.LastCommand.QuitCommand:
                             confirmQuitCommands(sv);
                             break;
+                        case LastUnfinishedCommand.LastCommand.NewGameCommand:
+                            confirmNewGameCommands(sv);
+                            break;
                         default:
                             ss.Speak("There is no such command!");
                             break;
@@ -3969,7 +4077,7 @@ namespace SharpChess
                     switch (lastUnfinishedCommand.lastCommand)
                     {
                         case LastUnfinishedCommand.LastCommand.MovePieceToPositionCommand:
-                            confirmMovePieceToPositionCommand(sv["Position"]);
+                            confirmMovePieceToPositionCommands(sv["Position"]);
                             break;
                         default:
                             ss.Speak("There is no such command!");
@@ -3987,7 +4095,7 @@ namespace SharpChess
             }
         }
         
-        private void confirmMovePieceToPositionCommand(SemanticValue sv)
+        private void confirmMovePieceToPositionCommands(SemanticValue sv)
         {
             int fileFrom = int.Parse(sv["HorizontalPosition"].Value.ToString());
             int rankFrom = int.Parse(sv["VerticalPosition"].Value.ToString());
@@ -3997,8 +4105,23 @@ namespace SharpChess
             this.moveAPiece(fileFrom, rankFrom, fileTo, rankTo);
         }
 
+        private void confirmNewGameCommands(SemanticValue sv)
+        {
+            lastUnfinishedCommand = null;
+            if (sv["YesNo"].Value.ToString().Equals("Yes"))
+            {
+                ss.Speak("I will beat you again!");
+                Game.New();
+            }
+            else
+            {
+                ss.Speak("Ok, make your next move!");
+            }
+        }
+
         private void confirmQuitCommands(SemanticValue sv)
         {
+            lastUnfinishedCommand = null;
             if (sv["YesNo"].Value.ToString().Equals("Yes"))
             {
                 isRecognizing = false;
@@ -4009,7 +4132,6 @@ namespace SharpChess
             }
             else
             {
-                lastUnfinishedCommand = null;
                 ss.Speak(ResponseGenerator.generateResponse(ResponseGenerator.Situation.QuitGame_No));
             }
         }

@@ -146,8 +146,12 @@
     <Compile Include="LastUnfinishedCommand.cs" />
     <Compile Include="Movement.cs" />
     <Compile Include="ResponseGenerator.cs" />
-    <Content Include="xml\AskPossibleMoves.xml" />
-    <Content Include="xml\AskValidMove.xml" />
+    <Content Include="xml\AskPossibleMoves.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="xml\AskValidMove.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xml\Commands.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -157,10 +161,14 @@
     <Content Include="xml\MoveCommands.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="xml\NewGameCommands.xml" />
     <Content Include="xml\QuitCommands.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="xml\TestMultiPropertiesRetrieval.xml" />
+    <Content Include="xml\UndoCommands.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <EmbeddedResource Include="Forms\frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </EmbeddedResource>
