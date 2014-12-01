@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SharpChess.Model;
+using SharpChess.Model.AI;
 
 namespace SharpChess
 {
@@ -9,13 +11,13 @@ namespace SharpChess
     {
         public Movement()
         {
-            ChessPiece = null;
+            ChessPiece = Piece.PieceNames.King;
             fileFrom = -1;
             fileTo = -1;
             rankFrom = -1;
             rankTo = -1;
         }
-        public String ChessPiece { get; set; }
+        public Piece.PieceNames ChessPiece { get; set; }
         public int fileFrom { get; set; }
         public int rankFrom { get; set; }
         public int fileTo { get; set; }

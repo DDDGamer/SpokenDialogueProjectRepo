@@ -1094,7 +1094,7 @@ namespace SharpChess.Model
             }
 
             MakeAMoveInternal(move.Name, move.Piece, move.To);
-           
+            
             SaveBackup();
             SendBoardPositionChangeEvent();
             ResumePondering();

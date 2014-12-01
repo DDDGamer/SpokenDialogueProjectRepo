@@ -3695,6 +3695,16 @@ namespace SharpChess
                                     Game.MakeAMove(move.Name, move.Piece, move.To);
                                     blnMoveMade = true;
                                     ss.Speak(ResponseGenerator.generateResponse(pieceFrom.Name));
+
+                                    if (Game.PlayerToPlay.IsInCheckMate)
+                                    {
+                                        ss.Speak("Check Mate!");
+                                        ss.Speak("I can not believe that I let you win.");
+                                    }
+                                    else if (Game.PlayerToPlay.IsInCheck)
+                                    {
+                                        ss.Speak("Check!");
+                                    }
                                     break;
                                 }
                             }
@@ -3962,6 +3972,10 @@ namespace SharpChess
                     {
                         processConfirmCommands(e.Result.Semantics["ConfirmCommands"]);
                     }
+                    else if (e.Result.Semantics.ContainsKey("RepeatCommands"))
+                    {
+                        processRepeatCommands(e.Result.Semantics["RepeatCommands"]);
+                    }
                     else
                     {
                         String result = "I'm sorry Dave. I'm afraid I can't do that.";
@@ -3981,6 +3995,7 @@ namespace SharpChess
 
         private void processMovePositionToPositionCommand(SemanticValue sv)
         {
+            lastUnfinishedCommand = null;
             int fileFrom = int.Parse(sv["HorizontalPositionFrom"].Value.ToString());
             int rankFrom = int.Parse(sv["VerticalPositionFrom"].Value.ToString());
             int fileTo = int.Parse(sv["HorizontalPositionTo"].Value.ToString());
@@ -3991,22 +4006,45 @@ namespace SharpChess
 
         private void processMovePieceToPositionCommand(SemanticValue sv)
         {
+            lastUnfinishedCommand = null;
+            String chessName = sv["ChessPiece"].Value.ToString();
+            int num = numOfPiece(getPieceNameByString(chessName));
 
-            Movement movement = new Movement();
-            movement.ChessPiece = sv["ChessPiece"].Value.ToString();
-            movement.fileTo = int.Parse(sv["HorizontalPositionTo"].Value.ToString());
-            movement.rankTo = int.Parse(sv["VerticalPositionTo"].Value.ToString());
+            if (num == 0)
+            {
+                ss.Speak("There is no " + chessName + " in your play.");
+            }
+            else if (num == 1)
+            {
+                Piece piece = getPieceByName(getPieceNameByString(chessName));
+                
+                int fileFrom = piece.Square.File;
+                int rankFrom = piece.Square.Rank;
+                int fileTo = int.Parse(sv["HorizontalPositionTo"].Value.ToString());
+                int rankTo = int.Parse(sv["VerticalPositionTo"].Value.ToString());
 
-            lastUnfinishedCommand = new LastUnfinishedCommand();
-            lastUnfinishedCommand.confirmationType = LastUnfinishedCommand.ConfirmationType.Position;
-            lastUnfinishedCommand.lastCommand = LastUnfinishedCommand.LastCommand.MovePieceToPositionCommand;
-            lastUnfinishedCommand.movement = movement;
+                moveAPiece(fileFrom, rankFrom, fileTo, rankTo);
+            }
+            else
+            {
+                Movement movement = new Movement();
+                movement.ChessPiece = getPieceNameByString(chessName);
+                movement.fileTo = int.Parse(sv["HorizontalPositionTo"].Value.ToString());
+                movement.rankTo = int.Parse(sv["VerticalPositionTo"].Value.ToString());
 
-            ss.Speak("Which " + movement.ChessPiece + "do you want to move?");
+                lastUnfinishedCommand = new LastUnfinishedCommand();
+                lastUnfinishedCommand.confirmationType = LastUnfinishedCommand.ConfirmationType.Position;
+                lastUnfinishedCommand.lastCommandType = LastUnfinishedCommand.LastCommandType.MovePieceToPositionCommand;
+                lastUnfinishedCommand.movement = movement;
+                lastUnfinishedCommand.lastCommand = "Which " + movement.ChessPiece + "do you want to move?";
+
+                ss.Speak(lastUnfinishedCommand.lastCommand);
+            }
         }
 
         private void processAskPossibleMovesCommand(SemanticValue sv)
         {
+            lastUnfinishedCommand = null;
             int file = int.Parse(sv["HorizontalPosition"].Value.ToString());
             int rank = int.Parse(sv["VerticalPosition"].Value.ToString());
 
@@ -4021,10 +4059,11 @@ namespace SharpChess
         private void processNewGameCommands(SemanticValue sv)
         {
             lastUnfinishedCommand = new LastUnfinishedCommand();
-            lastUnfinishedCommand.lastCommand = LastUnfinishedCommand.LastCommand.NewGameCommand;
+            lastUnfinishedCommand.lastCommandType = LastUnfinishedCommand.LastCommandType.NewGameCommand;
             lastUnfinishedCommand.confirmationType = LastUnfinishedCommand.ConfirmationType.YesNo;
+            lastUnfinishedCommand.lastCommand = "Are you sure you want to start a new game?";
 
-            ss.Speak("Are you sure you want to start a new game?");
+            ss.Speak(lastUnfinishedCommand.lastCommand);
             Console.WriteLine("New game command: Are you sure you want to start a new game?");
         }
 
@@ -4044,10 +4083,11 @@ namespace SharpChess
         private void processQuitCommand(SemanticValue sv)
         {
             lastUnfinishedCommand = new LastUnfinishedCommand();
-            lastUnfinishedCommand.lastCommand = LastUnfinishedCommand.LastCommand.QuitCommand;
+            lastUnfinishedCommand.lastCommandType = LastUnfinishedCommand.LastCommandType.QuitCommand;
             lastUnfinishedCommand.confirmationType = LastUnfinishedCommand.ConfirmationType.YesNo;
+            lastUnfinishedCommand.lastCommand = "Are you sure you want to quit?";
 
-            ss.Speak("Are you sure you want to quit?");
+            ss.Speak(lastUnfinishedCommand.lastCommand);
             Console.WriteLine("Quit Command: Are you sure you want to quit?");
         }
 
@@ -4058,12 +4098,12 @@ namespace SharpChess
                 if (lastUnfinishedCommand.confirmationType == LastUnfinishedCommand.ConfirmationType.YesNo
                     && sv.ContainsKey("YesNo"))
                 {
-                    switch (lastUnfinishedCommand.lastCommand)
+                    switch (lastUnfinishedCommand.lastCommandType)
                     {
-                        case LastUnfinishedCommand.LastCommand.QuitCommand:
+                        case LastUnfinishedCommand.LastCommandType.QuitCommand:
                             confirmQuitCommands(sv);
                             break;
-                        case LastUnfinishedCommand.LastCommand.NewGameCommand:
+                        case LastUnfinishedCommand.LastCommandType.NewGameCommand:
                             confirmNewGameCommands(sv);
                             break;
                         default:
@@ -4074,9 +4114,9 @@ namespace SharpChess
                 else if (lastUnfinishedCommand.confirmationType == LastUnfinishedCommand.ConfirmationType.Position
                     && sv.ContainsKey("Position"))
                 {
-                    switch (lastUnfinishedCommand.lastCommand)
+                    switch (lastUnfinishedCommand.lastCommandType)
                     {
-                        case LastUnfinishedCommand.LastCommand.MovePieceToPositionCommand:
+                        case LastUnfinishedCommand.LastCommandType.MovePieceToPositionCommand:
                             confirmMovePieceToPositionCommands(sv["Position"]);
                             break;
                         default:
@@ -4094,7 +4134,19 @@ namespace SharpChess
                 ss.Speak("Please talk sense!");
             }
         }
-        
+
+        private void processRepeatCommands(SemanticValue sv)
+        {
+            if (lastUnfinishedCommand != null)
+            {
+                if (lastUnfinishedCommand.lastCommand != null)
+                {
+                    ss.Speak("I said " + lastUnfinishedCommand.lastCommand);
+                }
+            }
+        }
+
+
         private void confirmMovePieceToPositionCommands(SemanticValue sv)
         {
             int fileFrom = int.Parse(sv["HorizontalPosition"].Value.ToString());

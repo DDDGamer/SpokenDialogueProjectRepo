@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="RepeatCommands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="RepeatCommands" scope="public">
+    <one-of>
+      <item>
+        <ruleref uri="#OneWord"/>
+      </item>
+      <item>
+        <ruleref uri ="#Sentence"/>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id ="OneWord">
+    <one-of>
+      <item>
+        <item repeat="0-1"> I'm </item>
+        <item> sorry </item>
+      </item>
+      <item>
+        <item> pardon </item>
+        <item repeat="0-1"> me </item>
+      </item>
+      <item> excuse me </item>
+    </one-of>
+  </rule>
+
+  <rule id="Sentence">
+    <item repeat="0-1">
+      <ruleref uri="#OneWord"/>
+    </item>
+    <item> What did you say </item>
+  </rule>
+</grammar>

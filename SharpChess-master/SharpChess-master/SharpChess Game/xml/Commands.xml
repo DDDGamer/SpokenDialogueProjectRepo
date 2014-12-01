@@ -32,6 +32,11 @@
         <tag> out.NewGameCommands = rules.NewGameCommands </tag>
       </item>
       <item>
+        <ruleref uri="RepeatCommands.xml"/>
+        <tag> out.RepeatCommands = rules.RepeatCommands</tag>
+      </item>
+      
+      <item>
         <ruleref uri="UndoCommands.xml"/>
         <tag> out.UndoCommands = rules.UndoCommands; </tag>
       </item>

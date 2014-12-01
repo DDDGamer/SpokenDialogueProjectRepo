@@ -8,8 +8,9 @@ namespace SharpChess
     class LastUnfinishedCommand
     {
         public ConfirmationType confirmationType { get; set; }
-        public LastCommand lastCommand { get; set; }
-        public Movement movement { get; set; } 
+        public LastCommandType lastCommandType { get; set; }
+        public Movement movement { get; set; }
+        public String lastCommand { get; set; }
 
         public enum ConfirmationType
         {
@@ -18,7 +19,7 @@ namespace SharpChess
             Null
         }
 
-        public enum LastCommand
+        public enum LastCommandType
         {
             QuitCommand,
             NewCommand,
@@ -33,13 +34,14 @@ namespace SharpChess
         {
             movement = null;
             confirmationType = ConfirmationType.Null;
-            lastCommand = LastCommand.Null;
+            lastCommandType = LastCommandType.Null;
+            lastCommand = null;
         }
 
-        public LastUnfinishedCommand(ConfirmationType confirmationType, LastCommand lastCommand, Movement movement)
+        public LastUnfinishedCommand(ConfirmationType confirmationType, LastCommandType lastCommandType, Movement movement)
         {
             this.confirmationType = confirmationType;
-            this.lastCommand = lastCommand;
+            this.lastCommandType = lastCommandType;
             this.movement = movement;
         }
     }

@@ -165,6 +165,7 @@
     <Content Include="xml\QuitCommands.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="xml\RepeatCommands.xml" />
     <Content Include="xml\TestMultiPropertiesRetrieval.xml" />
     <Content Include="xml\UndoCommands.xml">
       <SubType>Designer</SubType>

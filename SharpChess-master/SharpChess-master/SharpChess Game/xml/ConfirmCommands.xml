@@ -16,6 +16,7 @@
 
   <rule id="Position">
     <item repeat="0-1"> The </item>
+    <item repeat="0-1"> one on </item>
     <item repeat="0-1">
       <ruleref uri="MoveCommands.xml#ChessPiece"/>
       <tag> out.ChessPiece = rules.latest()</tag>
