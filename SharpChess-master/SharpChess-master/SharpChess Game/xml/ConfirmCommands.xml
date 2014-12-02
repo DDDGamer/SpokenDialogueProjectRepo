@@ -54,6 +54,9 @@
       <item>
         Yeah <tag> out = "Yes"; </tag>
       </item>
+      <item>
+        Yep <tag> out = "Yes"; </tag>
+      </item>
 
       
       <item>
@@ -75,6 +78,9 @@
       </item>
       <item>
         Nah <tag> out = "No"; </tag>
+      </item>
+      <item>
+        Nope <tag> out = "No"; </tag>
       </item>
     </one-of>
   </rule>

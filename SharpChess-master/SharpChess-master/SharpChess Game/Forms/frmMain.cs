@@ -3762,14 +3762,14 @@ namespace SharpChess
                 }
                 else
                 {
-                    ss.Speak(ResponseGenerator.posibleMoves(pieceFrom.Name.ToString(), letter+number));
+                    ss.Speak(ResponseGenerator.posibleMoves(pieceFrom.Name.ToString(), letter + " " + number));
                 }
                 this.RenderBoardColours();
                 this.pnlEdging.Refresh();
             }
             else
             {
-                ss.Speak("There is nothing at " + letter + number+ ", so no possible moves.");
+                ss.Speak("There is nothing at " + letter + " " + number+ ", so no possible moves.");
             }
         }
 

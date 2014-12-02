@@ -4,6 +4,8 @@
   <rule id="QuitCommands" scope="public">
     <item repeat="0-1">
       <one-of>
+        <item> I </item>
+        <item> I am </item>
         <item> I want to </item>
       </one-of>
     </item>
@@ -12,6 +14,8 @@
         <item> quit </item>
         <item> end </item>
         <item> exit </item>
+        <item> Done </item>
+        <item> Give Up </item>
       </one-of>
     </item>
     <item repeat="0-1"> game </item>

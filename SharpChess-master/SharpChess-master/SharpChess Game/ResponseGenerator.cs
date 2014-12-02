@@ -122,7 +122,7 @@ namespace SharpChess
                 case Situation.AskRepeat:
                     return responseAskRepeat[randomNumber(responseAskRepeat.Length)];
                 case Situation.NoCommand:
-                    return responseNoCommand[randomNumber(responseNoCommand.Length);
+                    return responseNoCommand[randomNumber(responseNoCommand.Length)];
                 default:
                     return responseDefault[randomNumber(responseDefault.Length)];
             }
