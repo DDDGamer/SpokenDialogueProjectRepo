@@ -8,13 +8,21 @@
       <tag> out.Prefix = rules.Prefix; </tag>
     </item>
     <item>
-      <ruleref uri="MoveCommands.xml"/>
-      <tag>
-        out.Action = rules.MoveCommands.Action;
-        out.ChessPiece = rules.MoveCommands.ChessPiece;
-        out.HorizontalPosition = rules.MoveCommands.HorizontalPosition;
-        out.VerticalPosition = rules.MoveCommands.VerticalPosition;
-      </tag>
+      <ruleref uri="MoveCommands.xml#HorizontalPosition"/>
+      <tag> out.HorizontalPositionFrom = rules.latest(); </tag>
+    </item>
+    <item>
+      <ruleref uri="MoveCommands.xml#VerticalPosition"/>
+      <tag> out.VerticalPositionFrom = rules.latest(); </tag>
+    </item>
+    <item> to </item>
+    <item>
+      <ruleref uri="MoveCommands.xml#HorizontalPosition"/>
+      <tag> out.HorizontalPositionTo = rules.latest(); </tag>
+    </item>
+    <item>
+      <ruleref uri="MoveCommands.xml#VerticalPosition"/>
+      <tag> out.VerticalPositionTo = rules.latest(); </tag>
     </item>
   </rule>
 
