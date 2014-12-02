@@ -8,6 +8,7 @@ namespace SharpChess
 {
     class ResponseGenerator
     {
+
         public enum Situation
         {
             QuitGame_Yes,
@@ -16,34 +17,54 @@ namespace SharpChess
 
         private static Random randomGenerator = new Random();
 
+        private static int randomNumber(int max)
+        {
+            return randomGenerator.Next(max);
+        }
+
         private static String[] responseQuitGame_Yes = {
                                                            "What a coward!",
                                                            "Loser!",
                                                            "I win!",
-                                                           "Who's next?"
+                                                           "So who's up next?"
                                                        };
         private static String[] responseQuitGame_No = {
                                                           "Through so.",
                                                           "That's right.",
-                                                          "Make your move then."
+                                                          "Make your move then.",
+                                                          "For a second there I though you'd chickened out!"
                                                       };
         private static String[] responseDefault = {
-                                                      "I don't know what to say."
+                                                      "I don't know what to say.",
+                                                      "I have no idea what to say next",
+                                                      "Hmm, I do not have a good responce",
+                                                      "Oh hi, you have reached the default responce."
                                                   };
 
         private static String[] responsePawn = {
-                                                   "Sir yes sir!"
+                                                   "Pawn moving!",
+                                                   "Sir yes sir!",
+                                                   "Yes Sir!",
+                                                   "At Once!",
+                                                   "Moving now!"
                                                };
 
         private static String[] responseKnight = {
+                                                     "Kight moving!",
                                                      "For the king!"
                                                  };
 
         private static String[] responseKing = {
-                                                     "How dare you giving me order!"
+                                                    "The King makes his move!",
+                                                    "The king moves",
+                                                    "The king is on the move",
+                                                    "How dare you giving me order!",
+                                                     "I shall do as I please"
                                                };
 
         private static String[] responseQueen = {
+                                                    "The Queen makes her move",
+                                                    "The queen moves swiftly",
                                                     "Where is my husband?"
                                                 };
 
@@ -89,9 +110,25 @@ namespace SharpChess
             }
         }
 
-        private static int randomNumber(int max)
+        public static String noMoves()
         {
-            return randomGenerator.Next(max);
+            String[] responces = {
+                                    "There are no possible move for that piece.",
+                                    "That piece can not move anywhere.",
+                                    "Looks like you cant go anywhere.",
+                                    "There is no way out",
+                                    "Looks like youre stuck there buddy, try another piece"
+                                 };
+            return responces[randomNumber(responces.Length)];
+        }
+
+        public static String posibleMoves(string name, string position)
+        {
+            String[] responces = {
+                                    "I am highlighting the possible moves for " + name + " at " + position,
+                                    "The possible moves for " + name + " at " + position + " are now highlighted"
+                                 };
+            return responces[randomNumber(responces.Length)];
         }
     }
 }

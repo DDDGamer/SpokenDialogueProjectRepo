@@ -62,7 +62,7 @@ namespace SharpChess
         /// <summary>
         /// The squar e_ brightness.
         /// </summary>
-        private const int SQUARE_BRIGHTNESS = 48;
+        private const int SQUARE_BRIGHTNESS = 20;
 
         /// <summary>
         ///   Required designer variable.
@@ -79,8 +79,8 @@ namespace SharpChess
         /// </summary>
         private readonly Color BOARD_SQUARE_COLOUR_BLACK_BRIGHT = Color.FromArgb(
             Math.Min(189 + SQUARE_BRIGHTNESS, 255), 
-            Math.Min(117 + SQUARE_BRIGHTNESS, 255), 
-            Math.Min(53 + SQUARE_BRIGHTNESS, 255));
+            Math.Min(117 + SQUARE_BRIGHTNESS*5, 255), 
+            Math.Min(53 + SQUARE_BRIGHTNESS*3, 255));
 
         /// <summary>
         /// The boar d_ squar e_ colou r_ white.
@@ -91,9 +91,9 @@ namespace SharpChess
         /// The boar d_ squar e_ colou r_ whit e_ bright.
         /// </summary>
         private readonly Color BOARD_SQUARE_COLOUR_WHITE_BRIGHT = Color.FromArgb(
-            Math.Min(229 + SQUARE_BRIGHTNESS, 255), 
-            Math.Min(197 + SQUARE_BRIGHTNESS, 255), 
-            Math.Min(105 + SQUARE_BRIGHTNESS, 255));
+            Math.Min(229 + SQUARE_BRIGHTNESS/4, 255), 
+            Math.Min(197 + SQUARE_BRIGHTNESS*3, 255), 
+            Math.Min(105 + SQUARE_BRIGHTNESS/3, 255));
 
         /// <summary>
         /// The m_acur piece cursors.
@@ -3714,8 +3714,7 @@ namespace SharpChess
                     if (!blnMoveMade)
                     {
                         abortMove();
-                        System.Media.SoundPlayer m_SoundPlayer =
-                  new System.Media.SoundPlayer(@"..\..\sound\cantdo.wav");
+                        System.Media.SoundPlayer m_SoundPlayer = new System.Media.SoundPlayer(@"..\..\sound\cantdo.wav");
                         m_SoundPlayer.Play();
                     }
                     else
@@ -3745,6 +3744,9 @@ namespace SharpChess
             Square squareFrom = Board.GetSquare(file, rank);
             Piece pieceFrom = squareFrom.Piece;
 
+            String letter = convertIntToFile(file);
+            String number = convertIntToRank(rank);
+
             if (pieceFrom != null)
             {
                 this.m_squareFrom = squareFrom;
@@ -3753,15 +3755,49 @@ namespace SharpChess
                 pieceFrom.GenerateLegalMoves(this.m_movesPossible);
                 if (m_movesPossible.Count == 0)
                 {
-                    ss.Speak("There is no possible move for the piece.");
+                    ss.Speak(ResponseGenerator.noMoves());
                 }
                 else
                 {
-                    ss.Speak("Marked.");
+                    ss.Speak(ResponseGenerator.posibleMoves(pieceFrom.Name.ToString(), letter+number));
                 }
                 this.RenderBoardColours();
                 this.pnlEdging.Refresh();
             }
+            else
+            {
+                ss.Speak("There is nothing at " + letter + number+ ", so no possible moves.");
+            }
+        }
+
+        private String convertIntToFile(int n)
+        {
+            switch (n)
+            {
+                case 0:
+                    return "A";
+                case 1:
+                    return "B";
+                case 2:
+                    return "C";
+                case 3:
+                    return "D";
+                case 4:
+                    return "E";
+                case 5:
+                    return "F";
+                case 6:
+                    return "G";
+                case 7:
+                    return "H";
+                default:
+                    return "A";
+            }
+        }
+
+        private String convertIntToRank(int n)
+        {
+            return "" + (n + 1);
         }
 
         public void abortMove()
@@ -3861,7 +3897,7 @@ namespace SharpChess
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to initialize gramma.");
+                throw new Exception("Failed to initialize grammar.");
             }
         }
 
@@ -3930,7 +3966,10 @@ namespace SharpChess
         {
             if (e != null)
             {
-                string path = @"C:\Visual Studio Projects\SharpChess-master\SharpChess-master\Record\";
+                //Stop Listening while event is being handled to prevent tts from being recognized
+                sre.RecognizeAsyncStop();
+
+                string path = @"..\..\..\Record\";
                 path += fileNum;
                 path += @".wav";
 
@@ -3956,6 +3995,10 @@ namespace SharpChess
                     {
                         processAskPossibleMovesCommand(e.Result.Semantics["AskPossibleMoves"]);
                     }
+                    else if (e.Result.Semantics.ContainsKey("AskValidMove"))
+                    {
+                        processAskValidMoveCommand(e.Result.Semantics["AskValidMove"]);
+                    }
                     else if (e.Result.Semantics.ContainsKey("NewGameCommands"))
                     {
                         processNewGameCommands(e.Result.Semantics["NewGameCommands"]);
@@ -3978,11 +4021,12 @@ namespace SharpChess
                     }
                     else
                     {
-                        String result = "I'm sorry Dave. I'm afraid I can't do that.";
-                        System.Media.SoundPlayer m_SoundPlayer =
-                  new System.Media.SoundPlayer(@"..\..\sound\cantdo.wav");
-                        m_SoundPlayer.Play();
+                        //String result = "I'm sorry Dave. I'm afraid I can't do that.";
+                        //System.Media.SoundPlayer m_SoundPlayer = new System.Media.SoundPlayer(@"..\..\sound\cantdo.wav");
+                        //m_SoundPlayer.Play();
+                        String result = " Unrecognized Command.";
                         Console.WriteLine(result);
+                        ss.Speak(result);
                     }
                 }
                 else
@@ -3991,6 +4035,25 @@ namespace SharpChess
                     ss.Speak("Pardon me?");
                 }
             }
+            //Even finished, start Listening again!
+            sre.RecognizeAsync(RecognizeMode.Multiple);
+        }
+
+        //TODO
+        private void processAskValidMoveCommand(SemanticValue semanticValue)
+        {
+            ss.Speak("Yes!");
+
+            lastUnfinishedCommand = null;
+            int file = int.Parse(semanticValue["HorizontalPosition"].Value.ToString());
+            int rank = int.Parse(semanticValue["VerticalPosition"].Value.ToString());
+
+            if (this.m_squareFrom != null)
+            {
+                abortMove();
+            }
+
+            markPosibleMoves(file, rank);
         }
 
         private void processMovePositionToPositionCommand(SemanticValue sv)
@@ -4012,7 +4075,8 @@ namespace SharpChess
 
             if (num == 0)
             {
-                ss.Speak("There is no " + chessName + " in your play.");
+                //ss.Speak("There is no " + chessName + " in your set.");
+                ss.Speak("You do not have a " + chessName + " in your set.");
             }
             else if (num == 1)
             {
@@ -4072,11 +4136,18 @@ namespace SharpChess
             if (sv.Value.ToString().Equals("all"))
             {
                 UndoAllMoves();
+                ss.Speak("Going back to the beginning.");
             }
             else
             {
+                //If playing against ai, go back 2 turns, if with other human player only 1 turn
+                if (true)
+                {
+                    UndoMove();
+                }
+
                 UndoMove();
-                UndoMove();
+                ss.Speak("Going back one turn.");
             }
         }
 
@@ -4131,7 +4202,7 @@ namespace SharpChess
             }
             else
             {
-                ss.Speak("Please talk sense!");
+                ss.Speak("That doesnt make sense! Try again please.");
             }
         }
 

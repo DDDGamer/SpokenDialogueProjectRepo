@@ -4,3 +4,9 @@ C:\Visual Studio Projects\ChessGame2\ChessGame2\bin\Debug\ChessGame2.pdb
 C:\Visual Studio Projects\ChessGame2\ChessGame2\obj\Debug\ChessGame2.csprojResolveAssemblyReference.cache
 C:\Visual Studio Projects\ChessGame2\ChessGame2\obj\Debug\ChessGame2.exe
 C:\Visual Studio Projects\ChessGame2\ChessGame2\obj\Debug\ChessGame2.pdb
+C:\Users\Denis\Documents\Github\SpokenDialogueProjectRepo\ChessGame2\ChessGame2\bin\Debug\ChessGame2.exe.config
+C:\Users\Denis\Documents\Github\SpokenDialogueProjectRepo\ChessGame2\ChessGame2\bin\Debug\ChessGame2.exe
+C:\Users\Denis\Documents\Github\SpokenDialogueProjectRepo\ChessGame2\ChessGame2\bin\Debug\ChessGame2.pdb
+C:\Users\Denis\Documents\Github\SpokenDialogueProjectRepo\ChessGame2\ChessGame2\obj\Debug\ChessGame2.exe
+C:\Users\Denis\Documents\Github\SpokenDialogueProjectRepo\ChessGame2\ChessGame2\obj\Debug\ChessGame2.pdb
+C:\Users\Denis\Documents\Github\SpokenDialogueProjectRepo\ChessGame2\ChessGame2\obj\Debug\ChessGame2.csprojResolveAssemblyReference.cache

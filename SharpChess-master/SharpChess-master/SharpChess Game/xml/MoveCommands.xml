@@ -80,28 +80,28 @@
   <rule id="HorizontalPosition" scope="public">
     <one-of>
       <item>
-        Alpha <tag> out = 0 </tag>
+        A <tag> out = 0 </tag>
       </item>
       <item>
-        Bravo <tag> out = 1 </tag>
+        B <tag> out = 1 </tag>
       </item>
       <item>
-        Charlie <tag> out = 2 </tag>
+        C <tag> out = 2 </tag>
       </item>
       <item>
-        Delta <tag> out = 3 </tag>
+        D <tag> out = 3 </tag>
       </item>
       <item>
-        Echo <tag> out = 4 </tag>
+        E <tag> out = 4 </tag>
       </item>
       <item>
-        Foxtrot <tag> out = 5 </tag>
+        F <tag> out = 5 </tag>
       </item>
       <item>
-        Golf <tag> out = 6 </tag>
+        G <tag> out = 6 </tag>
       </item>
       <item>
-        Hotel <tag> out = 7 </tag>
+        H <tag> out = 7 </tag>
       </item>
     </one-of>
   </rule>

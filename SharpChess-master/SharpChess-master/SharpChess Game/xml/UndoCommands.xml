@@ -10,10 +10,16 @@
         <item repeat="0-1">
           <one-of>
             <item> last </item>
+            <item> one </item>
             <item> all <tag> out = "all"; </tag> </item>
           </one-of>
         </item>
-        <item> move </item>
+        <item repeat="0-1"> move </item>
+      </item>
+      <item>
+        <item>Go back</item>
+        <item repeat="0-1"> one </item>
+        <item repeat="0-1"> move </item>
       </item>
       <item>
         <item> I </item>

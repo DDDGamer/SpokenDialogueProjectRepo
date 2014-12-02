@@ -39,7 +39,10 @@
   </rule>
 
   <rule id="Prefix">
-    <item repeat="0-1"> What are the </item>
+    <one-of>
+      <item repeat="0-1"> What are the </item>
+      <item repeat="0-1"> Show me the </item>
+    </one-of>
     <one-of>
       <item> possible moves for </item>
     </one-of>

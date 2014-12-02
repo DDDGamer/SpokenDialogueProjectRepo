@@ -80,6 +80,7 @@ namespace ChessGame2
 
         private void sre_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
+            sre.RecognizeAsyncCancel();
             if (e != null)
             {
                 if (e.Result.Confidence >= 0.5)
@@ -115,8 +116,9 @@ namespace ChessGame2
                         String result = "I'm sorry Dave. I'm afraid I can't do that.";
                         System.Media.SoundPlayer m_SoundPlayer =
                   new System.Media.SoundPlayer(@"..\..\sound\cantdo.wav");
-                        m_SoundPlayer.Play();
+                        //m_SoundPlayer.Play();
                         Console.WriteLine(result);
+                        m_SoundPlayer.PlaySync();
                     }
                 }
                 else
@@ -125,12 +127,14 @@ namespace ChessGame2
                     ss.Speak("Pardon me?");
                 }
             }
+            
+            sre.RecognizeAsync(RecognizeMode.Multiple);
         }
 
         private bool IsLegalMove()
         {
             Random randomGenerator = new Random();
-            int randomNum = randomGenerator.Next(2);
+            int randomNum = randomGenerator.Next(3);
             if (randomNum == 0)
             {
                 return false;
