@@ -30,6 +30,7 @@
     <one-of>
       <item> Can i </item>
       <item> May i </item>
+      <item> Is it possible </item>
     </one-of>
   </rule>
 </grammar>

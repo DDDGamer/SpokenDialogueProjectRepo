@@ -11,7 +11,12 @@
           <one-of>
             <item> last </item>
             <item> one </item>
-            <item> all <tag> out = "all"; </tag> </item>
+            <item>
+              <one-of>
+                <item> all <tag> out = "all"; </tag> </item>
+                <item> everything <tag> out = "all"; </tag> </item>
+              </one-of>
+            </item>
           </one-of>
         </item>
         <item repeat="0-1"> move </item>
