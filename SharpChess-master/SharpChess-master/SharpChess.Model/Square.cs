@@ -229,7 +229,7 @@ namespace SharpChess.Model
         {
             get
             {
-                string[] fileNames = { "a", "b", "c", "d", "e", "f", "g", "h" };
+                string[] fileNames = { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel" };
                 return fileNames[this.File];
             }
         }

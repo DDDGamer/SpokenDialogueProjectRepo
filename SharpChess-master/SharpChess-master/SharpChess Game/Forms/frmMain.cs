@@ -49,6 +49,8 @@ namespace SharpChess
     {
         #region Constants and Fields
 
+        private const String RECORD_FOLDER = @"..\..\..\Record\";
+
         /// <summary>
         /// The intellegenc e_ computer.
         /// </summary>
@@ -836,7 +838,7 @@ namespace SharpChess
             {
                 lblFile = new Label();
                 lblFile.BackColor = Color.Transparent;
-                lblFile.Font = new Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+                lblFile.Font = new Font("Arial", 8F, FontStyle.Bold, GraphicsUnit.Point, 0);
                 lblFile.Name = "lblFile" + intFile.ToString();
                 lblFile.Size = new Size(SQUARE_SIZE, SQUARE_SIZE / 2);
                 lblFile.TabIndex = 12;
@@ -2918,6 +2920,7 @@ namespace SharpChess
         {
             Game.TerminateGame();
             threadRecognize.Abort();
+            file.Close();
         }
 
         /// <summary>
@@ -3775,23 +3778,23 @@ namespace SharpChess
             switch (n)
             {
                 case 0:
-                    return "A";
+                    return "Alpha";
                 case 1:
-                    return "B";
+                    return "Bravo";
                 case 2:
-                    return "C";
+                    return "Charlie";
                 case 3:
-                    return "D";
+                    return "Delta";
                 case 4:
-                    return "E";
+                    return "Echo";
                 case 5:
-                    return "F";
+                    return "Foxtrot";
                 case 6:
-                    return "G";
+                    return "Golf";
                 case 7:
-                    return "H";
+                    return "Hotel";
                 default:
-                    return "A";
+                    return "Alpha";
             }
         }
 
@@ -3872,6 +3875,8 @@ namespace SharpChess
         private TD.Thread threadRecognize;
         private LastUnfinishedCommand lastUnfinishedCommand;
         private int fileNum;
+        private String recordFolder;
+        private System.IO.StreamWriter file;
 
         #endregion
 
@@ -3886,6 +3891,11 @@ namespace SharpChess
             threadRecognize = new TD.Thread(new TD.ThreadStart(Recognize));
             lastUnfinishedCommand = null;
             fileNum = 1;
+            DateTime dateTime = DateTime.Now;
+            recordFolder = RECORD_FOLDER + "Record_" + dateTime.ToString("yyyy-MM-dd_H-mm-ss") + "\\";
+            System.IO.Directory.CreateDirectory(recordFolder);
+            file = new StreamWriter(recordFolder + "Record.txt");
+            Console.WriteLine(recordFolder);
         }
 
         private void InitGrammar()
@@ -3923,11 +3933,6 @@ namespace SharpChess
             {
                 sre = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
                 sre.SetInputToDefaultAudioDevice();
-
-                //ss.SetOutputToWaveFile(@"C:\Visual Studio Projects\ChessGame2\ChessGame2\sound\temp.wav");
-                //ss.Speak("B2 to B3");
-                //ss.SetOutputToDefaultAudioDevice();
-                //sre.SetInputToWaveFile(@"C:\Visual Studio Projects\ChessGame2\ChessGame2\sound\temp.wav");
 
                 sre.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(sre_SpeechRecognized);
                 sre.LoadGrammar(g);
@@ -3969,7 +3974,7 @@ namespace SharpChess
                 //Stop Listening while event is being handled to prevent tts from being recognized
                 sre.RecognizeAsyncStop();
 
-                string path = @"..\..\..\Record\";
+                string path = recordFolder;
                 path += fileNum;
                 path += @".wav";
 
@@ -3977,6 +3982,8 @@ namespace SharpChess
                 e.Result.Audio.WriteToWaveStream(outputStream);
                 outputStream.Close();
                 fileNum++;
+
+                file.WriteLine(e.Result.Text);
 
                 if (e.Result.Confidence >= 0.3)
                 {
@@ -4007,6 +4014,10 @@ namespace SharpChess
                     {
                         processUndoCommands(e.Result.Semantics["UndoCommands"]);
                     }
+                    else if (e.Result.Semantics.ContainsKey("RedoCommands"))
+                    {
+                        processRedoCommands(e.Result.Semantics["RedoCommands"]);
+                    }
                     else if (e.Result.Semantics.ContainsKey("QuitCommands"))
                     {
                         processQuitCommand(e.Result.Semantics["QuitCommands"]);
@@ -4024,15 +4035,15 @@ namespace SharpChess
                         //String result = "I'm sorry Dave. I'm afraid I can't do that.";
                         //System.Media.SoundPlayer m_SoundPlayer = new System.Media.SoundPlayer(@"..\..\sound\cantdo.wav");
                         //m_SoundPlayer.Play();
-                        String result = " Unrecognized Command.";
+                        String result = "I'm not sure what you mean.";
                         Console.WriteLine(result);
-                        ss.Speak(result);
+                        ss.Speak(ResponseGenerator.generateResponse(ResponseGenerator.Situation.NoCommand));
                     }
                 }
                 else
                 {
                     Console.WriteLine("Pardon me?");
-                    ss.Speak("Pardon me?");
+                    ss.Speak(ResponseGenerator.generateResponse(ResponseGenerator.Situation.AskRepeat));
                 }
             }
             //Even finished, start Listening again!
@@ -4059,7 +4070,7 @@ namespace SharpChess
                 pieceFrom.GenerateLegalMoves(this.m_movesPossible);
                 if (m_movesPossible.Count == 0)
                 {
-                    ss.Speak("There is no possible move for the piece.");
+                    ss.Speak(ResponseGenerator.noMoves());
                 }
                 else
                 {
@@ -4079,7 +4090,7 @@ namespace SharpChess
                     }
                     else
                     {
-                        ss.Speak("No, you can not. But you can move to these places.");
+                        ss.Speak("No, you can not. But you can move to one of these highlighted places.");
                         this.RenderBoardColours();
                         this.pnlEdging.Refresh();
                     }
@@ -4186,6 +4197,27 @@ namespace SharpChess
             }
         }
 
+        private void processRedoCommands(SemanticValue semanticValue)
+        {
+            if (semanticValue.Value.ToString().Equals("all"))
+            {
+                RedoAllMoves();
+                ss.Speak("Going to the end.");
+            }
+            else
+            {
+                //If playing against ai, go back 2 turns, if with other human player only 1 turn
+                if (true)
+                {
+                    RedoMove();
+                }
+
+                RedoMove();
+                ss.Speak("Go ahead one move.");
+            }
+
+        }
+
         private void processQuitCommand(SemanticValue semanticValue)
         {
             lastUnfinishedCommand = new LastUnfinishedCommand();
@@ -4258,7 +4290,6 @@ namespace SharpChess
             }
         }
 
-
         private void confirmMovePieceToPositionCommands(SemanticValue semanticValue)
         {
             int fileFrom = int.Parse(semanticValue["HorizontalPosition"].Value.ToString());
@@ -4274,8 +4305,8 @@ namespace SharpChess
             lastUnfinishedCommand = null;
             if (semanticValue["YesNo"].Value.ToString().Equals("Yes"))
             {
-                ss.Speak("I will beat you again!");
                 Game.New();
+                ss.Speak("Okay, let's play. You first.");
             }
             else
             {

@@ -35,10 +35,13 @@
         <ruleref uri="RepeatCommands.xml"/>
         <tag> out.RepeatCommands = rules.RepeatCommands</tag>
       </item>
-      
       <item>
         <ruleref uri="UndoCommands.xml"/>
         <tag> out.UndoCommands = rules.UndoCommands; </tag>
+      </item>
+      <item>
+        <ruleref uri="RedoCommands.xml"/>
+        <tag> out.RedoCommands = rules.RedoCommands; </tag>
       </item>
     </one-of>
   </rule>

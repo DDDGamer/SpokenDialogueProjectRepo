@@ -13,6 +13,8 @@ namespace SharpChess
         {
             QuitGame_Yes,
             QuitGame_No,
+            AskRepeat,
+            NoCommand
         }
 
         private static Random randomGenerator = new Random();
@@ -21,6 +23,18 @@ namespace SharpChess
         {
             return randomGenerator.Next(max);
         }
+
+        private static String[] responseNoCommand = {
+                                                        "I don't recognize that.",
+                                                        "I don't know what you mean.",
+                                                        "Unrecognized Command."
+                                                    };
+
+        private static String[] responseAskRepeat = {
+                                                         "Excuse me?",
+                                                         "Pardon?",
+                                                         "I'm sorry?"
+                                                     };
 
         private static String[] responseQuitGame_Yes = {
                                                            "What a coward!",
@@ -105,6 +119,10 @@ namespace SharpChess
                     return responseQuitGame_Yes[randomNumber(responseQuitGame_Yes.Length)];
                 case Situation.QuitGame_No:
                     return responseQuitGame_No[randomNumber(responseQuitGame_No.Length)];
+                case Situation.AskRepeat:
+                    return responseAskRepeat[randomNumber(responseAskRepeat.Length)];
+                case Situation.NoCommand:
+                    return responseNoCommand[randomNumber(responseNoCommand.Length);
                 default:
                     return responseDefault[randomNumber(responseDefault.Length)];
             }

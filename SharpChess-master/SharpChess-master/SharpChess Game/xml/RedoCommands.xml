@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="RedoCommands"
+  xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="RedoCommands" scope="public">
+    <example> Redo move </example>
+    <example> Redo </example>
+    <one-of>
+      <item>
+        <item> Redo </item>
+        <item repeat="0-1">
+          <one-of>
+            <item> last </item>
+            <item> one </item>
+            <item>
+              <one-of>
+                <item>
+                  all <tag> out = "all"; </tag>
+                </item>
+                <item>
+                  everything <tag> out = "all"; </tag>
+                </item>
+              </one-of>
+            </item>
+          </one-of>
+        </item>
+        <item repeat="0-1"> move </item>
+      </item>
+      <item>
+        <item>Go ahead</item>
+        <item repeat="0-1"> one </item>
+        <item repeat="0-1"> move </item>
+      </item>
+      <item> Forward </item>
+    </one-of>
+
+  </rule>
+</grammar>

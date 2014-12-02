@@ -8,6 +8,10 @@
       <tag> out.Prefix = rules.Prefix; </tag>
     </item>
     <item>
+      <ruleref uri="MoveCommands.xml#Action" />
+      <tag> out.Action = rules.Action; </tag>
+    </item>
+    <item>
       <ruleref uri="MoveCommands.xml#HorizontalPosition"/>
       <tag> out.HorizontalPositionFrom = rules.latest(); </tag>
     </item>
