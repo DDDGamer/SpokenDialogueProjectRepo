@@ -55,6 +55,10 @@
         Yeah <tag> out = "Yes"; </tag>
       </item>
 
+      
+      <item>
+        Cancel <tag> out = "No"; </tag>
+      </item>
       <item>
         Undo <tag> out = "No"; </tag>
       </item>

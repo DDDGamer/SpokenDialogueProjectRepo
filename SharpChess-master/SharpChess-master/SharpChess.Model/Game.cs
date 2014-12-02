@@ -1094,7 +1094,16 @@ namespace SharpChess.Model
             }
 
             MakeAMoveInternal(move.Name, move.Piece, move.To);
-            
+
+            if (Game.PlayerToPlay.IsInCheckMate)
+            {
+                Console.WriteLine("You are in check mate.");
+            }
+            else if (Game.PlayerToPlay.IsInCheck)
+            {
+                Console.WriteLine("You are in check.");
+            }
+
             SaveBackup();
             SendBoardPositionChangeEvent();
             ResumePondering();

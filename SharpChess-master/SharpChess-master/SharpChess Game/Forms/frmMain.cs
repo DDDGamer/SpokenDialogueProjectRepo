@@ -4019,6 +4019,10 @@ namespace SharpChess
                     {
                         processRepeatCommands(e.Result.Semantics["RepeatCommands"]);
                     }
+                    else if (e.Result.Semantics.ContainsKey("AskValidMove"))
+                    {
+                        processAskPositionValidMoveCommand(e.Result.Semantics["AskValidMove"]);
+                    }
                     else
                     {
                         //String result = "I'm sorry Dave. I'm afraid I can't do that.";
@@ -4166,8 +4170,20 @@ namespace SharpChess
         {
             if (lastUnfinishedCommand != null)
             {
-                if (lastUnfinishedCommand.confirmationType == LastUnfinishedCommand.ConfirmationType.YesNo
-                    && sv.ContainsKey("YesNo"))
+                if (lastUnfinishedCommand.confirmationType == LastUnfinishedCommand.ConfirmationType.Position
+                    && sv.ContainsKey("Position"))
+                {
+                    switch (lastUnfinishedCommand.lastCommandType)
+                    {
+                        case LastUnfinishedCommand.LastCommandType.MovePieceToPositionCommand:
+                            confirmMovePieceToPositionCommands(sv["Position"]);
+                            break;
+                        default:
+                            ss.Speak("There is no such command!");
+                            break;
+                    }
+                }
+                else if (sv.ContainsKey("YesNo"))
                 {
                     switch (lastUnfinishedCommand.lastCommandType)
                     {
@@ -4177,18 +4193,12 @@ namespace SharpChess
                         case LastUnfinishedCommand.LastCommandType.NewGameCommand:
                             confirmNewGameCommands(sv);
                             break;
-                        default:
-                            ss.Speak("There is no such command!");
-                            break;
-                    }
-                }
-                else if (lastUnfinishedCommand.confirmationType == LastUnfinishedCommand.ConfirmationType.Position
-                    && sv.ContainsKey("Position"))
-                {
-                    switch (lastUnfinishedCommand.lastCommandType)
-                    {
                         case LastUnfinishedCommand.LastCommandType.MovePieceToPositionCommand:
-                            confirmMovePieceToPositionCommands(sv["Position"]);
+                            if (sv["YesNo"].Value.ToString().Equals("No"))
+                            {
+                                lastUnfinishedCommand = null;
+                                ss.Speak("Ok, make your next move.");
+                            }
                             break;
                         default:
                             ss.Speak("There is no such command!");
@@ -4214,6 +4224,57 @@ namespace SharpChess
                 {
                     ss.Speak("I said " + lastUnfinishedCommand.lastCommand);
                 }
+            }
+        }
+
+        private void processAskPositionValidMoveCommand(SemanticValue sv)
+        {
+            lastUnfinishedCommand = null;
+            int fileFrom = int.Parse(sv["HorizontalPositionFrom"].Value.ToString());
+            int rankFrom = int.Parse(sv["VerticalPositionFrom"].Value.ToString());
+            int fileTo = int.Parse(sv["HorizontalPositionTo"].Value.ToString());
+            int rankTo = int.Parse(sv["VerticalPositionTo"].Value.ToString());
+
+            Square squareFrom = Board.GetSquare(fileFrom, rankFrom);
+            Piece pieceFrom = squareFrom.Piece;
+
+            if (pieceFrom != null)
+            {
+                this.m_squareFrom = squareFrom;
+                this.m_squareTo = null;
+                this.m_movesPossible = new Moves();
+                pieceFrom.GenerateLegalMoves(this.m_movesPossible);
+                if (m_movesPossible.Count == 0)
+                {
+                    ss.Speak("There is no possible move for the piece.");
+                }
+                else
+                {
+                    bool blnCanMove = false;
+                    foreach (Move move in m_movesPossible)
+                    {
+                        if (move.To.File == fileTo && move.To.Rank == rankTo)
+                        {
+                            blnCanMove = true;
+                            break;
+                        }
+                    }
+
+                    if (blnCanMove)
+                    {
+                        ss.Speak("Yes, you can.");
+                    }
+                    else
+                    {
+                        ss.Speak("No, you can not. But you can move to these places.");
+                        this.RenderBoardColours();
+                        this.pnlEdging.Refresh();
+                    }
+                }
+            }
+            else
+            {
+                ss.Speak("There is no piece there.");
             }
         }
 
